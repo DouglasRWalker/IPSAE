@@ -64,7 +64,7 @@ if dist_cutoff<10: dist_string="0"+dist_string
 
 if ".pdb" in pdb_path and pae_file_path.endswith(".json"):
     pdb_stem=pdb_path.replace(".pdb","")
-    path_stem =     f'{pdb_path.replace(".pdb","")}_{pae_string}_{dist_string}'
+    path_stem =     f'{pdb_path.replace(".pdb","")}_AvO_{pae_string}_{dist_string}'
     af2 =    True
     af3 =    False
     boltz =  False
@@ -72,7 +72,7 @@ if ".pdb" in pdb_path and pae_file_path.endswith(".json"):
 
 elif ".cif" in pdb_path and pae_file_path.endswith(".json"):
     pdb_stem=pdb_path.replace(".cif","")
-    path_stem =     f'{pdb_path.replace(".cif","")}_{pae_string}_{dist_string}'
+    path_stem =     f'{pdb_path.replace(".cif","")}_AvO_{pae_string}_{dist_string}'
     af2 =    False
     af3 =    True
     boltz =  False
@@ -80,7 +80,7 @@ elif ".cif" in pdb_path and pae_file_path.endswith(".json"):
 
 elif ".cif" in pdb_path and pae_file_path.endswith(".npz"):  # Boltz1/2 in cif format
     pdb_stem=pdb_path.replace(".cif","")
-    path_stem =     f'{pdb_path.replace(".cif","")}_{pae_string}_{dist_string}'
+    path_stem =     f'{pdb_path.replace(".cif","")}_AvO_{pae_string}_{dist_string}'
     af2 =    False
     af3 =    False
     boltz  = True
@@ -88,7 +88,7 @@ elif ".cif" in pdb_path and pae_file_path.endswith(".npz"):  # Boltz1/2 in cif f
 
 elif ".pdb" in pdb_path and pae_file_path.endswith(".npz"):  # Boltz1/2 in pdb format
     pdb_stem=pdb_path.replace(".pdb","")
-    path_stem =     f'{pdb_path.replace(".pdb","")}_{pae_string}_{dist_string}'
+    path_stem =     f'{pdb_path.replace(".pdb","")}_AvO_{pae_string}_{dist_string}'
     af2 =    False
     af3 =    False
     boltz  = True
@@ -98,6 +98,7 @@ else:
     print("Wrong PDB or PAE file type ", pdb_path)
     sys.exit()
 
+path_stem =        path_stem + "AvO"
 file_path =        path_stem + ".txt"
 file2_path =       path_stem + "_byres.txt"
 pml_path =         path_stem + ".pml"
