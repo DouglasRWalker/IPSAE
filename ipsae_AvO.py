@@ -13,6 +13,11 @@
 # January 3, 2026: Fixed Boltz2 issues (PDB and mmCIF format; chainIDs)
 # MIT license: script can be modified and redistributed for non-commercial and commercial use, as long as this information is reproduced.
 
+# Adapted by Douglas R. Walker
+# Oregon State University
+# June 29, 2026: Refactored the code to calculate ipSAEs on a one-vs-all basis, where all chains are considered for each calculation rather than in a pairwise fashion.
+# This was envisioned for higher-order oligomeric complexes composed of small proteins, where small interfaces between pairs is not representative of the stability of the complex.
+
 # includes support for Boltz structures and structures with nucleic acids
 
 # It may be necessary to install numpy with the following command:
@@ -856,7 +861,7 @@ chainunaries=set()
 for chain in unique_chains:
     chainunaries.add(chain)
 
-OUT.write("\nChn PAE Dist  Type   ipSAE    ipSAE_d0chn ipSAE_d0dom  ipTM_af  ipTM_d0chn     pDockQ     pDockQ2    LIS       n0res  n0chn  n0dom   d0res   d0chn   d0dom  nres1   nres2   dist1   dist2  Model\n")
+OUT.write("Chn PAE Dist  Type   ipSAE    ipSAE_d0chn ipSAE_d0dom  ipTM_af  ipTM_d0chn     pDockQ     pDockQ2    LIS       n0res  n0chn  n0dom   d0res   d0chn   d0dom  nres1   nres2   dist1   dist2  Model\n")
 PML.write("# Chn PAE Dist  Type   ipSAE    ipSAE_d0chn ipSAE_d0dom  ipTM_af  ipTM_d0chn     pDockQ     pDockQ2    LIS      n0res  n0chn  n0dom   d0res   d0chn   d0dom  nres1   nres2   dist1   dist2  Model\n")
 for chain in sorted(chainunaries):
 
@@ -874,28 +879,28 @@ for chain in sorted(chainunaries):
         if af3: iptm_af = max(iptm_af3[chain].values())  # symmetric value for each chain pair
         if boltz: iptm_af = max(iptm_boltz[chain].values())
 
-        outstring=f'{chain}    {pae_string:3}  {dist_string:3}  {"asym":5} ' + (
-            f'{ipsae_d0res_asym[chain]:8.6f}    '
-            f'{ipsae_d0chn_asym[chain]:8.6f}    '
-            f'{ipsae_d0dom_asym[chain]:8.6f}    '
-            f'{iptm_af:5.3f}    '
-            f'{iptm_d0chn_asym[chain]:8.6f}    '
-            f'{pDockQ[chain]:8.4f}   '
-            f'{pDockQ2[chain]:8.4f}   '
-            f'{LIS[chain]:8.4f}   '
-            f'{int(n0res[chain]):5d}  '
-            f'{int(n0chn[chain]):5d}  '
-            f'{int(n0dom[chain]):5d}  '
-            f'{d0res[chain]:6.2f}  '
-            f'{d0chn[chain]:6.2f}  '
-            f'{d0dom[chain]:6.2f}  '
-            f'{residues_1:5d}   '
-            f'{residues_2:5d}   '
-            f'{dist_residues_1:5d}   '
-            f'{dist_residues_2:5d}   '
-            f'{pdb_stem}\n')
-        OUT.write(outstring)
-        PML.write("# " + outstring)
+#        outstring=f'{chain}    {pae_string:3}  {dist_string:3}  {"asym":5} ' + (
+#            f'{ipsae_d0res_asym[chain]:8.6f}    '
+#            f'{ipsae_d0chn_asym[chain]:8.6f}    '
+#            f'{ipsae_d0dom_asym[chain]:8.6f}    '
+#            f'{iptm_af:5.3f}    '
+#            f'{iptm_d0chn_asym[chain]:8.6f}    '
+#            f'{pDockQ[chain]:8.4f}   '
+#            f'{pDockQ2[chain]:8.4f}   '
+#            f'{LIS[chain]:8.4f}   '
+#            f'{int(n0res[chain]):5d}  '
+#            f'{int(n0chn[chain]):5d}  '
+#            f'{int(n0dom[chain]):5d}  '
+#            f'{d0res[chain]:6.2f}  '
+#            f'{d0chn[chain]:6.2f}  '
+#            f'{d0dom[chain]:6.2f}  '
+#            f'{residues_1:5d}   '
+#            f'{residues_2:5d}   '
+#            f'{dist_residues_1:5d}   '
+#            f'{dist_residues_2:5d}   '
+#            f'{pdb_stem}\n')
+#        OUT.write(outstring)
+#        PML.write("# " + outstring)
         residues_1 = len(unique_residues_chain[chain])
         residues_2 = len(unique_residues_otherchains[chain])
         dist_residues_1 = len(dist_unique_residues_chain[chain])
@@ -927,7 +932,7 @@ for chain in sorted(chainunaries):
             f'{residues_2:5d}   '
             f'{dist_residues_1:5d}   '
             f'{dist_residues_2:5d}   '
-            f'{pdb_stem}\n')
+            f'{pdb_stem}')
         OUT.write(outstring)
         PML.write("# " + outstring)
 
