@@ -132,3 +132,52 @@ AlphaFold2 complex of RAF1 (chain A), KSR1 (chain B), and MEK1 (chain C). RAF1 a
 **pSAE_d0dom**=residue-specific ipSAE calculated with PAE cutoff and d0 = total number of residues in both chains with any interchain PAE<cutoff (n0dom)
 
 **pSAE**=residue-specific ipSAE value for given PAE cutoff and d0 determined by number of residues in 2nd chain with PAE<cutoff (n0res)
+
+
+# Changes in the IPSAE All vs. One version
+Modified functionality to instead perform and output ipSAE calculations from one protein in a complex to all other proteins in the predicted structure altogether, rather than pairwise.
+
+# Installation
+Simply download the Python script ipsae_AvO.py. It may be necessary to install the Python numpy package with:
+
+    pip install numpy
+
+# Usage:                                                                                                                                                                                                     
+AlphaFold2:
+
+     python ipsae_AvO.py <path_to_af2_json_file> <path_to_af2_pdb_file> <pae_cutoff> <dist_cutoff>   
+     python ipsae_AvO.py RAF1_KSR1_scores_rank_001_alphafold2_multimer_v3_model_4_seed_003.json RAF1_KSR1_unrelaxed_rank_001_alphafold2_multimer_v3_model_4_seed_003.pdb 15 15
+
+AlphaFold3:
+
+     python ipsae_AvO.py <path_to_af3_json_file> <path_to_af3_cif_file> <pae_cutoff> <dist_cutoff>                    
+     python ipsae_AvO.py fold_aurka_tpx2_full_data_0.json fold_aurka_tpx2_model_0.cif 10 10
+
+Boltz1:
+
+     python ipsae_AvO.py <path_to_boltz1_pae_npz_file> <path_to_boltz1_cif_file> <pae_cutoff> <dist_cutoff>
+     python ipsae_AvO.py pae_AURKA_TPX2_model_0.npz  AURKA_TPX2_model_0.cif 10 10
+
+
+# Output chain-chain score file
+The only type output is max since ipSAE is only calculated one for each chain, in reference to all other chains, so A-B versus B-A has no meaning
+
+    Chn PAE Dist  Type   ipSAE    ipSAE_d0chn ipSAE_d0dom  ipTM_af  ipTM_d0chn     pDockQ     pDockQ2    LIS       n0res  n0chn  n0dom   d0res   d0chn   d0dom  nres1   nres2   dist1   dist2  Model
+    A    25   10   max   0.134183    0.317214    0.301341    0.290    0.226929      0.1695     0.0291     0.4508      49    142    129    2.22    4.43    4.21     63      66      43      43   2026_06_25_08_26_n_linker_wtx2\fold_2026_06_25_08_26_n_linker_wtx2_model_4
+    B    25   10   max   0.134352    0.317335    0.297547    0.290    0.227041      0.1695     0.0291     0.4488      49    142    126    2.22    4.43    4.16     63      63      44      40   2026_06_25_08_26_n_linker_wtx2\fold_2026_06_25_08_26_n_linker_wtx2_model_4
+
+
+# Output by-residue score file
+There is no ScoredChain in this output, because all other chains are being scored against.
+A per-residue ipSAE value for each residue is included in each row.
+
+    i   AlignChn  AlignResNum  AlignResType  AlignRespLDDT      n0chn  n0dom  n0res    d0chn     d0dom     d0res   ipTM_pae  ipSAE_d0chn ipSAE_d0dom    ipSAE 
+    1       A            1           GLY           61.34           142    129      0     4.433     4.213     1.000     0.0225      0.0000      0.0000      0.0000
+    2       A            2           SER           53.45           142    129      0     4.433     4.213     1.000     0.0227      0.0000      0.0000      0.0000
+    3       A            3           ARG           62.09           142    129      3     4.433     4.213     1.000     0.0235      0.0322      0.0292      0.0017
+    4       A            4           GLY           60.95           142    129      5     4.433     4.213     1.000     0.0239      0.0318      0.0288      0.0017
+    5       A            5           GLY           61.14           142    129      7     4.433     4.213     1.000     0.0238      0.0313      0.0283      0.0016
+    6       A            6           SER           60.61           142    129     13     4.433     4.213     1.000     0.0246      0.0336      0.0305      0.0018
+
+
+
