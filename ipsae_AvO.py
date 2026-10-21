@@ -107,6 +107,12 @@ path_stem =        path_stem + "AvO"
 file_path =        path_stem + ".txt"
 file2_path =       path_stem + "_byres.txt"
 pml_path =         path_stem + ".pml"
+
+#skip if output already exists
+if os.path.exists(file_path):
+    print(f"Output already exists: {file_path}")
+    sys.exit(0)
+
 OUT =              open(file_path,'w')
 PML =              open(pml_path,'w')
 OUT2 =             open(file2_path,'w')
